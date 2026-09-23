@@ -790,6 +790,7 @@ test('#2411: parallel-research sentinel target advances when slice or RESEARCH r
     full_content: 'research for S01',
   });
   const afterArtifact = readTargetSnapshot('research-slice', 'M001/parallel-research');
+  assert.ok(afterArtifact, 'snapshot after the RESEARCH artifact lands');
   assert.notEqual(afterArtifact, afterSlice, 'a slice RESEARCH artifact landing must advance the hash again');
 
   // A bookkeeping-only rewrite (same content, fresh imported_at) is not
