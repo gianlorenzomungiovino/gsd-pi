@@ -5,6 +5,21 @@ import { markMissingFinalResponse } from "../index.js";
 
 type SingleResultLike = Parameters<typeof markMissingFinalResponse>[0];
 
+function makeAssistantMessage(text: string) {
+	return {
+		role: "assistant",
+		content: [{ type: "text", text }],
+		usage: {
+			input: 1,
+			output: 1,
+			cacheRead: 0,
+			cacheWrite: 0,
+			total: 2,
+			cost: { total: 0 },
+		},
+	} as any;
+}
+
 function makeResult(overrides: Partial<SingleResultLike> = {}): SingleResultLike {
 	return {
 		agent: "executor",
@@ -64,7 +79,7 @@ describe("markMissingFinalResponse", () => {
 		const result = makeResult({
 			model: "claude-opus-5-5",
 			stopReason: "stop",
-			messages: [{ role: "assistant", content: [{ type: "text", text: "final answer" }] }],
+			messages: [makeAssistantMessage("final answer")],
 		});
 
 		markMissingFinalResponse(result);
