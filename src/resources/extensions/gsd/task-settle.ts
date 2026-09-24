@@ -569,7 +569,7 @@ export async function applyTaskSettle(input: {
     // publication of the same success serialize through the same fenced
     // domain-operation seam instead of racing it.
     const publication = await publishVerifiedTaskCompletion({
-      invocation: internalExecutionInvocation(`internal:tool:task.publish:${plan.publication.attemptId}`),
+      invocation: internalExecutionInvocation(`internal:auto:task.publish:${plan.publication.attemptId}`),
       basePath: input.basePath,
       task: input.task,
       attemptId: plan.publication.attemptId,

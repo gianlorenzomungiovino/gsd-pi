@@ -26,7 +26,7 @@ import {
   planBlockerAcceptedDisposition,
   planTaskSettle,
 } from "../task-settle.ts";
-import { resolveTaskCompletionAuthority } from "../task-completion-compatibility-adapter.ts";
+import { publishVerifiedTaskCompletion, resolveTaskCompletionAuthority } from "../task-completion-compatibility-adapter.ts";
 import { isClosedStatus } from "../status-guards.ts";
 import {
   normalizeLegacyLifecycleStatus,
@@ -709,6 +709,14 @@ test("publication door: apply publishes the stranded success from a reverted rea
   assert.equal(applied.published?.status, "committed");
   assert.equal(taskLifecycleStatus(), "completed", "publication re-adopts the reverted shadow to completed");
   assert.equal(row("SELECT status AS status FROM tasks WHERE id = 'T01'").status, "complete");
+
+  const replay = await publishVerifiedTaskCompletion({
+    invocation: invocation(`internal:auto:task.publish:${attemptId}`),
+    basePath: dir,
+    task: TASK,
+    attemptId,
+  });
+  assert.equal(replay.status, "replayed", "auto publication reuses the manual settlement operation");
 
   const again = planTaskSettle(TASK, "operator repair");
   assert.equal(again.rows.length, 0);
