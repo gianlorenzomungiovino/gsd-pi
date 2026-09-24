@@ -463,8 +463,8 @@ function loadSucceededAttempt(input: PublishVerifiedTaskCompletionInput): Attemp
       -- 'ready' covers a durable success whose lifecycle shadow was reverted by
       -- a side door (#2417): in_progress → ready is not a canonical transition,
       -- so the Attempt and evidence predicates below carry the guarantee, not
-      -- the shadow. Publication re-adopts completed inside this domain
-      -- operation, restoring parity with the legacy Task row.
+      -- the shadow. Publication first re-adopts in_progress in a separate
+      -- fenced operation, then completes the Task and its legacy row.
       AND lifecycle.lifecycle_status IN ('in_progress', 'ready')
       AND attempt.attempt_state = 'settled'
       AND result.outcome = 'succeeded'
