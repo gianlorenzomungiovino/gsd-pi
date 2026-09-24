@@ -35,6 +35,7 @@ import {
 import { readTaskRecoveryRoute } from "../task-recovery-domain-operation.ts";
 import { recordTaskTechnicalVerdict } from "../task-verification-domain-operation.ts";
 import { captureVerificationSourceSnapshot } from "../verification-source-integrity.ts";
+import { internalExecutionInvocation } from "../execution-invocation.ts";
 import type { ExecutionInvocation } from "../execution-invocation.ts";
 
 const tempDirs = new Set<string>();
@@ -711,7 +712,7 @@ test("publication door: apply publishes the stranded success from a reverted rea
   assert.equal(row("SELECT status AS status FROM tasks WHERE id = 'T01'").status, "complete");
 
   const replay = await publishVerifiedTaskCompletion({
-    invocation: invocation(`internal:auto:task.publish:${attemptId}`),
+    invocation: internalExecutionInvocation(`internal:auto:task.publish:${attemptId}`),
     basePath: dir,
     task: TASK,
     attemptId,

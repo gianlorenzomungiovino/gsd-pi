@@ -433,7 +433,8 @@ function planDurableSuccessPublication(task: TaskSettleTask): TaskPublicationPla
 
 /**
  * Read-only settle plan: the exact Attempt and optional lifecycle rows an
- * apply would change. Zero rows of both kinds means an apply is a no-op.
+ * apply would change, including publication of a stranded succeeded Attempt.
+ * An apply is a no-op only when rows, lifecycle rows, and publication are empty.
  */
 export function planTaskSettle(
   task: TaskSettleTask,
